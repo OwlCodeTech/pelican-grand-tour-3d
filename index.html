@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Pelican Grand Tour 3D — 鹈鹕环岛单车奇旅</title>
+    <meta
+      name="description"
+      content="Interactive 3D Pelican Riding a Vintage Riviera Road Bicycle — Custom GLSL Ocean & Sky Shaders, 2-Bone Analytical IK, Soft-Body Throat Pouch Physics & Procedural Web Audio"
+    />
+    <meta property="og:title" content="Pelican Grand Tour 3D — 鹈鹕环岛单车奇旅" />
+    <meta
+      property="og:description"
+      content="Three.js + Custom GLSL Gerstner Ocean + Analytical 2-Bone IK + Soft-Body Pelican Pouch + Procedural Web Audio"
+    />
+    <meta property="og:image" content="./og_banner.jpg" />
+    <link rel="icon" type="image/jpeg" href="./crest_badge.jpg" />
+    <script type="module" crossorigin src="./assets/index-BjslBkvV.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Brz9RSaY.css">
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <div id="toast-banner">🐟 精准捕鱼 +1！喉囊弹性拉满！</div>
+
+    <div class="hud-layer">
+      <!-- Top Bar: Brand Crest + Live Telemetry -->
+      <div class="hud-top">
+        <div class="brand-card">
+          <img
+            id="btn-open-poster"
+            class="crest-avatar"
+            src="./crest_badge.jpg"
+            alt="Pelican Velo Club Crest"
+            title="点击查看俱乐部海报与徽章"
+          />
+          <div class="brand-titles">
+            <h1>PELICAN GRAND TOUR 3D</h1>
+            <p>鹈鹕环岛单车奇旅 · GLSL 海浪 · 双骨骼逆运动学 IK · 软体喉囊 · WebAudio</p>
+          </div>
+        </div>
+
+        <div class="telemetry-bar">
+          <div class="metric">
+            <span class="metric-val teal" id="val-speed">24.5</span>
+            <span class="metric-lbl">km/h 时速</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="val-cadence">78</span>
+            <span class="metric-lbl">RPM 踏频</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="val-lean">6°</span>
+            <span class="metric-lbl">压弯倾角</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val highlight" id="val-fish">0</span>
+            <span class="metric-lbl">🐟 捕鱼数</span>
+          </div>
+          <div class="metric">
+            <span class="metric-val" id="val-fps">60</span>
+            <span class="metric-lbl">FPS 帧率</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar: Interactive Stunt & Utility Dock -->
+      <div class="hud-bottom">
+        <div class="action-dock">
+          <button class="act-btn" id="btn-mode" title="切换自动巡航 / WASD 手动驾驶">
+            🧭 自动巡航 <kbd>M</kbd>
+          </button>
+          <button class="act-btn" id="btn-turbo" title="涡轮破风冲刺（自动拉下飞行员风镜）">
+            ⚡ 破风冲刺 <kbd>Shift</kbd>
+          </button>
+          <button class="act-btn" id="btn-jump" title="兔跳腾空展翅">
+            🪽 兔跳展翅 <kbd>Space</kbd>
+          </button>
+          <button class="act-btn" id="btn-wheelie" title="单轮翘头特技">
+            🚲 翘头特技 <kbd>E</kbd>
+          </button>
+          <button class="act-btn" id="btn-bell" title="敲响黄铜复古车铃">
+            🔔 车铃 <kbd>B</kbd>
+          </button>
+          <button class="act-btn" id="btn-squawk" title="鹈鹕鸣叫张嘴">
+            🗣️ 鸣叫 <kbd>Q</kbd>
+          </button>
+          <button class="act-btn" id="btn-goggles" title="切换复古黄铜飞行员风镜">
+            🥽 风镜 <kbd>G</kbd>
+          </button>
+          <button class="act-btn" id="btn-frenzy" title="召唤跃水银鱼群供鹈鹕捕食">
+            🐟 召唤鱼群 <kbd>F</kbd>
+          </button>
+          <button class="act-btn" id="btn-audio" title="开启多声道程序化海浪/车铃/棘轮音效">
+            🔇 开启音效
+          </button>
+          <button class="act-btn" id="btn-photo" title="保存当前 3D 画面高清截图">
+            📸 截图 <kbd>P</kbd>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Studio Controls + Live Radar Minimap -->
+    <div class="side-column">
+      <div class="glass-panel">
+        <div class="panel-header" id="panel-toggle">
+          <span>🎛️ 导演控制台 · Studio</span>
+          <span id="panel-chevron">▾</span>
+        </div>
+        <div class="panel-body" id="panel-body">
+          <div class="ctrl-group">
+            <div class="ctrl-label"><span>🎥 镜头模式 (快捷键 C)</span></div>
+            <div class="seg-grid" id="cam-grid">
+              <button class="seg-btn active" data-cam="orbit">自由环绕</button>
+              <button class="seg-btn" data-cam="chase">动感跟拍</button>
+              <button class="seg-btn" data-cam="pov">鹈鹕第一视角</button>
+              <button class="seg-btn" data-cam="cinema">航拍大片</button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <div class="ctrl-label"><span>🌤️ 天气与昼夜光影</span></div>
+            <div class="seg-grid" id="time-grid">
+              <button class="seg-btn active" data-time="sunset">🌅 黄金落日</button>
+              <button class="seg-btn" data-time="noon">☀️ 晴午碧海</button>
+              <button class="seg-btn" data-time="night">🌌 荧光星夜</button>
+              <button class="seg-btn" data-time="dawn">🌸 珍珠晨曦</button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <div class="ctrl-label">
+              <span>🚴 巡航倍速</span>
+              <span id="lbl-speed-mult">1.0x</span>
+            </div>
+            <input id="rng-speed" type="range" min="0.2" max="2.4" step="0.1" value="1.0" />
+          </div>
+
+          <div class="ctrl-group">
+            <div class="ctrl-label">
+              <span>🧡 喉囊Q弹系数</span>
+              <span id="lbl-pouch">1.0x</span>
+            </div>
+            <input id="rng-pouch" type="range" min="0.2" max="2.2" step="0.1" value="1.0" />
+          </div>
+
+          <div class="ctrl-group">
+            <div class="ctrl-label">
+              <span>✨ 电影辉光 Bloom</span>
+              <span id="lbl-bloom">100%</span>
+            </div>
+            <input id="rng-bloom" type="range" min="0" max="2.0" step="0.1" value="1.0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="minimap-card">
+        <canvas id="minimap-canvas" width="160" height="160"></canvas>
+        <span class="minimap-caption">🗺️ 环岛木栈道与跃鱼雷达</span>
+      </div>
+    </div>
+
+    <!-- Club Poster Modal -->
+    <div class="modal-backdrop" id="poster-modal">
+      <div class="modal-card">
+        <img src="./og_banner.jpg" alt="Pelican Grand Tour 3D Poster" />
+        <h2>PELICAN VELO CLUB — RIVIERA GRAND TOUR</h2>
+        <p>
+          AI 视觉徽章贴图 + Three.js 实时物理渲染 · 鼠标拖拽可 360° 观察双骨骼逆运动学踩踏细节，按 M 键可切换 WASD 自由骑行！
+        </p>
+        <button class="act-btn active" id="btn-close-poster">返回 3D 骑行世界</button>
+      </div>
+    </div>
+
+  </body>
+</html>
